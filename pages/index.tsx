@@ -20,10 +20,10 @@ const Home: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Firmala - Experiencia en tus manos</title>
+        <title>Another AI</title>
         <meta
           name="description"
-          content="Firmala es una plataforma que te permite firmar documentos de manera digital y segura, al igual que conseguir consultas legales."
+          content="Another AI es una plataforma que te permite atender cientos de conversaciones en tiempo real en varios canales, todas asistidas por inteligencia artificial."
         />
       </Head>
       <Header />

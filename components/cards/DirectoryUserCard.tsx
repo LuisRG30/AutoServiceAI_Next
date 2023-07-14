@@ -19,7 +19,7 @@ function DirectoryUserCard({ name }: DirectoryUserCardProps) {
         </div>
         <div className="flex flex-col dark:text-gray-200">
           <h1>{name}</h1>
-          <h1>Firmala MX</h1>
+          <h1>Another AI</h1>
         </div>
         <MoreVertIcon />
       </div>
