@@ -95,7 +95,7 @@ const ChatBoard = ({
             id={message.id}
             message={message.message}
             from_user={message.from_user}
-            isSender={message.from_user.id === user}
+            isSender={message.from_user.id === user || (message.from_user.profile?.admin || false)}
             conversation={message.conversation}
             document={message.document}
             created_at={message.created_at}
