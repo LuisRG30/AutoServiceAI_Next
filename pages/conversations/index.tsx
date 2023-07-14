@@ -126,7 +126,7 @@ const Workspace: NextPageWithLayout = () => {
 
   const { readyState, sendJsonMessage } = useWebSocket(
     user
-      ? `wss://${process.env.NEXT_PUBLIC_SERVER_URL_ROOT}${focusedConversation.name}/?ticket_uuid=${ticket}`
+      ? `ws://${process.env.NEXT_PUBLIC_SERVER_URL_ROOT}${focusedConversation.name}/?ticket_uuid=${ticket}`
       : null,
     {
       onOpen: () => console.log("opened"),
