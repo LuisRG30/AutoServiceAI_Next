@@ -88,7 +88,7 @@ const Workspace = () => {
 
   const { readyState, sendJsonMessage } = useWebSocket(
     user
-      ? `ws://${process.env.NEXT_PUBLIC_SERVER_URL_ROOT}workspace/?ticket_uuid=${ticket}`
+      ? `wss://${process.env.NEXT_PUBLIC_SERVER_URL_ROOT}workspace/?ticket_uuid=${ticket}`
       : null,
 
     {
