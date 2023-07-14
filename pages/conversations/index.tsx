@@ -86,8 +86,6 @@ const Workspace: NextPageWithLayout = () => {
   const [page, setPage] = React.useState(1);
   const [hasMoreMessages, setHasMoreMessages] = React.useState(true);
 
-  const [onboardingResponse, setOnboardingResponse] = React.useState<any>({});
-
   const onDrop = React.useCallback(
     (acceptedFiles: any) => {
       acceptedFiles.forEach(async (file: File) => {
@@ -185,18 +183,8 @@ const Workspace: NextPageWithLayout = () => {
         console.log(error);
       }
     };
-    const getOnboardingResponse = async () => {
-      const response = await axios.get("onboarding-response", {
-        params: {
-          user: focusedConversation.user?.id,
-        },
-      });
-      setOnboardingResponse(response.data);
-    };
-
     if (user && initialized) {
       getTicket();
-      getOnboardingResponse();
 
       localStorage.setItem("focusedConversation", JSON.stringify(focusedConversation));
       localStorage.setItem("currentTab", JSON.stringify(tab));
@@ -273,6 +261,24 @@ const Workspace: NextPageWithLayout = () => {
       console.log(error);
     }
   };
+
+  const handleUpdateAutopilot = async (
+    conversationId: number | string,
+    autopilot: boolean
+  ) => {
+    try {
+      const response = await axios.put(`conversations/${conversationId}/` , {
+        autopilot: autopilot
+      })
+      setConversations(
+        conversations.map((conversation) =>
+          conversation.id === conversationId ? response.data : conversation
+        )
+      );
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   const toggleConversationArchiveStatus = async (
     conversationId: number | string
@@ -395,11 +401,13 @@ const Workspace: NextPageWithLayout = () => {
           (conversation) => {
             return {
               id: conversation.id,
+              integration: conversation.integration,
               user: conversation.user,
               name: conversation.name,
               assigned_to: conversation.assigned_to,
               status: conversation.status,
               archived: conversation.archived,
+              autopilot: conversation.autopilot,
               lastMessage: conversation.last_message?.message,
             };
           }
@@ -408,11 +416,13 @@ const Workspace: NextPageWithLayout = () => {
           (conversation) => {
             return {
               id: conversation.id,
+              integration: conversation.integration,
               user: conversation.user,
               name: conversation.name,
               assigned_to: conversation.assigned_to,
               status: conversation.status,
               archived: conversation.archived,
+              autopilot: conversation.autopilot,
               lastMessage: conversation.last_message?.message,
             };
           }
@@ -420,11 +430,13 @@ const Workspace: NextPageWithLayout = () => {
         conversations={searchedConversations.map((conversation) => {
           return {
             id: conversation.id,
+            integration: conversation.integration,
             user: conversation.user,
             name: conversation.name,
             assigned_to: conversation.assigned_to,
             status: conversation.status,
             archived: conversation.archived,
+            autopilot: conversation.autopilot,
             lastMessage: conversation.last_message?.message,
           };
         })}
@@ -437,6 +449,7 @@ const Workspace: NextPageWithLayout = () => {
         handleAssign={handleAssignConversation}
         handleUnassign={handleUnassignConversation}
         handleUpdateConversation={handleUpdateConversation}
+        handleUpdateAutopilot={handleUpdateAutopilot}
         handleToggleArchive={toggleConversationArchiveStatus}
         showArchived={showArchived}
         setShowArchived={setShowArchived}

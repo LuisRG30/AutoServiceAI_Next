@@ -10,8 +10,6 @@ export type TokenInfo = {
 
 export type Profile = {
     admin: boolean;
-    verified: boolean;
-    onboarded: boolean;
 }
 
 export type UserInfo = {

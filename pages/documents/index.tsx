@@ -9,14 +9,14 @@ import useAxios from "../../utils/useAxios";
 
 import UserContext from "../../context/UserContext";
 
-import { OnboardingRoute } from "../../utils/RouteProtection";
+import { ProtectedRoute } from "../../utils/RouteProtection";
 
 import { DocumentType } from "../../types";
 import Div100vh from "react-div-100vh";
 
 
 const Documents: NextPageWithLayout = () => {
-    OnboardingRoute();
+    ProtectedRoute();
 
     const { axios, initialized } = useAxios({});
     const router = useRouter();

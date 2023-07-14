@@ -5,3 +5,4 @@ export * from './user';
 export * from './message';
 export * from './payment';
 export * from './user';
+export * from './integration'

@@ -7,14 +7,14 @@ import AuthContext from "../../context/AuthContext";
 
 import PaymentsList from "../../components/lists/PaymentsList";
 
-import { ProtectedRoute, AdminRoute, OnboardingRoute } from "../../utils/RouteProtection";
+import { ProtectedRoute, AdminRoute } from "../../utils/RouteProtection";
 
 import { PaymentType } from "../../types";
 import Div100vh from "react-div-100vh";
 import { Card } from "@mui/material";
 
 const Payments: NextPageWithLayout = () => {
-  OnboardingRoute();
+  ProtectedRoute();
 
   const { axios, initialized } = useAxios({});
   const router = useRouter();

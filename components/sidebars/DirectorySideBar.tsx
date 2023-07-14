@@ -18,7 +18,7 @@ import DirectoryUserCard from "../cards/DirectoryUserCard";
 import InputWithLeadingIcon from "../inputs/InputWithLeadingIcon";
 import ChatDropdown from "../widgets/ChatDropdown";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import { UserType, UserInfo } from "../../types";
+import { IntegrationType, UserType, UserInfo } from "../../types";
 import { randomBackgroundColor } from "../../utils/RandomBackgroundColor";
 
 import { FocusedConversationType } from "../../types";
@@ -28,28 +28,34 @@ interface DirectorySideBarProps {
   show: boolean;
   conversationsAssignedToMe: Array<{
     id: string | number;
+    integration?: IntegrationType;
     user?: UserType;
     name: string;
     assigned_to: number | undefined | null;
     status: string;
+    autopilot: boolean;
     archived: boolean;
     lastMessage?: string;
   }>;
   conversationsNotAssigned: Array<{
     id: string | number;
+    integration?: IntegrationType;
     user?: UserType;
     name: string;
     assigned_to: number | undefined | null;
     status: string;
+    autopilot: boolean;
     archived: boolean;
     lastMessage?: string;
   }>;
   conversations: Array<{
     id: string | number;
+    integration?: IntegrationType;
     user?: UserType;
     name: string;
     assigned_to: number | undefined | null;
     status: string;
+    autopilot: boolean;
     archived: boolean;
     lastMessage?: string;
   }>;
@@ -72,6 +78,10 @@ interface DirectorySideBarProps {
     conversationId: number | string,
     status: string
   ) => Promise<void>;
+  handleUpdateAutopilot: (
+    conversationId: number | string,
+    autopilot: boolean
+  ) => Promise<void>
   handleToggleArchive: (conversationId: number | string) => Promise<void>;
   showArchived: boolean;
   setShowArchived: (showArchived: boolean) => void;
@@ -96,6 +106,7 @@ export default function DirectorySideBar({
   handleAssign,
   handleUnassign,
   handleUpdateConversation,
+  handleUpdateAutopilot,
   handleToggleArchive,
   showArchived,
   setShowArchived,
@@ -118,6 +129,37 @@ export default function DirectorySideBar({
         return conversationsAssignedToMe;
     }
   };
+
+  const renderChannelIcon = (channel: string | undefined) => {
+    switch (channel) {
+      case "integrated":
+          return (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+          )
+      case "whatsapp":
+        return (
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+          </svg>
+        )
+      case "telegram":
+          return (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+            </svg>
+          )
+      case "web":
+        return (
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+          </svg>
+        )
+      default:
+        return <div></div>
+    }
+  }
 
   return (
     <>
@@ -341,8 +383,17 @@ export default function DirectorySideBar({
                       <div
                         className={`h-10 w-10 rounded-full truncate bg-blue-100 flex items-center justify-center capitalize `}
                       >
-                        {conversation.name[0]}
+                        {renderChannelIcon(conversation.integration?.channel)}
                       </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" className="sr-only peer" 
+                          checked={conversation.autopilot} 
+                          onChange={(e) => {
+                            handleUpdateAutopilot(conversation.id, !conversation.autopilot)
+                          }}
+                        />
+                        <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                      </label>
                       <div className="flex justify-between w-full items-center">
                         <div className="ml-3">
                           <h1

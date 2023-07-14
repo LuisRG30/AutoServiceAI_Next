@@ -11,39 +11,6 @@ export function ProtectedRoute() {
   }
 }
 
-export function VerifiedRoute() {
-  const { push } = useRouter();
-  const { user } = useContext(AuthContext);
-  const { profile } = useContext(UserContext);
-  if (!user) {
-    return push("/login");
-  }
-  if (profile) {
-    if (!profile.verified) {
-      return push("/verify");
-    }
-  }
-}
-
-export function OnboardingRoute() {
-  const { push } = useRouter();
-  const { user } = useContext(AuthContext);
-  const { profile } = useContext(UserContext);
-
-  if (!user) {
-    return push("/login");
-  }
-  if (profile) {
-    if (!profile.verified) {
-      return push("/verify");
-    }
-    if (!profile.onboarded) {
-      return push("/onboarding");
-    }
-  }
-
-  
-}
 
 export function AdminRoute() {
   const { push } = useRouter();
@@ -53,9 +20,6 @@ export function AdminRoute() {
     return push("/login");
   }
   if (profile) {
-    if (!profile.verified) {
-      return push("/verify");
-    }
     if (!profile.admin) {
       return push("/");
     }

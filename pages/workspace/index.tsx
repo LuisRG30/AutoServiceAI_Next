@@ -17,7 +17,7 @@ import AuthContext from "../../context/AuthContext";
 import useAxios from "../../utils/useAxios";
 import ChatBoard from "../../components/chatUI/ChatBoard";
 import MessageBubble from "../../components/chatUI/MessageBubble";
-import { VerifiedRoute, OnboardingRoute, AdminRoute } from "../../utils/RouteProtection";
+import { ProtectedRoute, AdminRoute } from "../../utils/RouteProtection";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import ChatHeader from "../../components/chatUI/ChatHeader";
@@ -34,7 +34,8 @@ const Workspace = () => {
     name: "",
     online_users: [] as Array<UserType>,
     status: "",
-    archived: false
+    archived: false,
+    autopilot: true
   });
 
   const [messageInput, setMessageInput] = React.useState("");
@@ -205,8 +206,7 @@ const Workspace = () => {
     }
   }
 
-  //VerifiedRoute();
-  OnboardingRoute();
+  ProtectedRoute();
 
   return (
     <Div100vh className={`overflow-hidden relative flex flex-col bg-gray-900`}>
